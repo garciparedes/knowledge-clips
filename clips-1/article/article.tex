@@ -12,6 +12,8 @@
 
 \usepackage{amsmath}
 
+\usepackage{enumitem}
+
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 
@@ -37,6 +39,7 @@
 
 \author{
 	Fernández Angulo, Óscar \\
+	\and
 	García Prado, Sergio
 }
 
@@ -77,7 +80,62 @@
 
 	\section{Considerar el asistente al diagnostico propuesto por Pool y Mackworth}
 
-		\paragraph{}
-		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		\subsection{Ontología General}
+
+			\paragraph{}
+			La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Mientras que el conjunto de objetos se ha referenciado de forma particular, la declaración de atributos (DA) se ha dejado especificada de manera general para poder ser aprovechada para su reutilziación en otros problemas utilzando subíndices:
+
+			\begin{equation*}
+				O = \{l_2, s_3, cb_1, w_3,w_4, w_5, outside\}
+			\end{equation*}
+
+			\begin{multline*}
+				DA = \{ \\
+					l_i.live^s:boolean, l_i.type^s, l_i.lit^s:boolean, l_i.ok^s:boolean, \\
+					s_j.live^s:boolean, s_j.type^s, s_j.state^s, s_j.connected^m, s_j.ok^s:boolean, \\
+					cb_k.live^s:boolean, cb_k.type^s, cb_k.ok^s:boolean, cb_k.connected^s, \\
+					w_l.live^s:boolean, w_l.type^s, w_l.ok^s:boolean, w_l.connected^s, \\
+					outside.live^s:boolean, outside.ok^s:boolean, outside.connected^s \\
+				\}
+			\end{multline*}
+
+			\begin{equation*}
+				DD = O \cup DA
+			\end{equation*}
+
+			\paragraph{}
+			A continuación se muestran el conjunto de reglas necesarias para llevar a cabo la produción de conocimiento y por lo tanto, la modificación de la memoria de trabajo (MT), que en un estado inicial será inicializada a partir del conjunto de hechos indicados en la Ontología Especifica, tal y como se describirá próximamente.
+
+			\begin{enumerate}[label={\textbf{R\theenumi:}}]
+				\item
+					\textbf{if} $equals(?x, connected, ?y)$ \textbf{and} $equals(?x, live, t)$ \textbf{and} $equals(?x, ok, t)$ \\
+					\textbf{then} $add(?y, live, t)$ \textbf{fi}
+
+				\item
+					\textbf{if} $equals(?x, type, ligth)$ \textbf{and} $equals(?x, live, t)$ \textbf{and} $equals(?x, ok, t)$ \\
+					\textbf{then} $add(?x, lit, t)$ \textbf{fi}
+
+				\item
+					\textbf{if} $equals(?x, type, switch)$ \textbf{and} $equals(?x, live, t)$ \textbf{and} $equals(?x, state, ?y)$ \\
+					\hspace*{0.5cm} \textbf{and} $equals(?x, connected^{?y}, ?z)$ \\
+					\textbf{then} $add(?z, live, t)$ \textbf{fi}
+
+			\end{enumerate}
+
+
+		\subsection{Ontología Específica}
+
+			\begin{equation*}
+				\begin{split}
+					l_2.type=ligth, l_2.ok=true, \\
+					s_3.type=switch, s_j.state=up, s_j.connected^{up}=w_4, s_j.ok=true, \\
+					cb_1.type=circuit_breaker, cb_1.ok=true, cb_1.connected=w_3, \\
+					w_3.type=wire, w_l.ok=true, w_l.connected=s_3, \\
+					w_4.type=wire, w_l.ok=true, w_l.connected=l_2, \\
+					w_5.type=wire, w_l.ok=true, w_l.connected=cb_1, \\
+					outside.live=true, outside.ok=true, outside.connected=w_5
+				\end{split}
+			\end{equation*}
+
 
 \end{document}
