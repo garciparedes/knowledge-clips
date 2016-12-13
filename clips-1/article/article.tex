@@ -152,7 +152,7 @@
 				DA = \{ \\
 					l_i.live^s:boolean, l_i.type^s, l_i.lit^s:boolean, l_i.ok^s:boolean, \\
 					p_i.live^s:boolean, p_i.type^s, p_i.electrize^s:boolean, p_i.ok^s:boolean, \\
-					s_j.live^s:boolean, s_j.type^s, s_j.state^s, s_j.connected^m, s_j.ok^s:boolean, \\
+					s_j.live^s:boolean, s_j.type^s, s_j.state^s:{up, down}, s_j.up^s, s_j.down^s, s_j.ok^s:boolean, \\
 					cb_k.live^s:boolean, cb_k.type^s, cb_k.ok^s:boolean, cb_k.connected^s, \\
 					w_l.live^s:boolean, w_l.type^s, w_l.ok^s:boolean, w_l.connected^m, \\
 					outside.live^s:boolean, outside.ok^s:boolean, outside.connected^s \\
@@ -176,14 +176,18 @@
 					\textbf{then} $add(?x, lit, t)$ \textbf{fi}
 
 				\item
-					\textbf{if} $equals(?x, type, power_outlet)$ \textbf{and} $equals(?x, live, t)$ \textbf{and} $equals(?x, ok, t)$ \\
+					\textbf{if} $equals(?x, type, power\_outlet)$ \textbf{and} $equals(?x, live, t)$ \textbf{and} $equals(?x, ok, t)$ \\
 					\textbf{then} $add(?x, electrize, t)$ \textbf{fi}
 
 				\item
-					\textbf{if} $equals(?x, type, switch)$ \textbf{and} $equals(?x, live, t)$ \textbf{and} $equals(?x, state, ?y)$ \\
-					\hspace*{0.5cm} \textbf{and} $equals(?x, connected^{?y}, ?z)$ \\
-					\textbf{then} $add(?z, live, t)$ \textbf{fi}
+					\textbf{if} $equals(?x, type, switch)$ \textbf{and} $equals(?x, live, t)$ \textbf{and} $equals(?x, state, up)$ \\
+					\hspace*{0.5cm} \textbf{and} $equals(?x, up, ?y)$ \\
+					\textbf{then} $add(?y, live, t)$ \textbf{fi}
 
+				\item
+					\textbf{if} $equals(?x, type, switch)$ \textbf{and} $equals(?x, live, t)$ \textbf{and} $equals(?x, state, down)$ \\
+					\hspace*{0.5cm} \textbf{and} $equals(?x, down, ?y)$ \\
+					\textbf{then} $add(?y, live, t)$ \textbf{fi}
 			\end{enumerate}
 
 
@@ -193,8 +197,8 @@
 				\begin{split}
 					l_1.type=ligth, l_1.ok=true, \\
 					l_2.type=ligth, l_2.ok=true, \\
-					p_1.type=power_outlet, p_1.ok=true, \\
-					p_2.type=power_outlet, p_2.ok=true, \\
+					p_1.type=power\_outlet, p_1.ok=true, \\
+					p_2.type=power\_outlet, p_2.ok=true, \\
 					s_1.type=switch, s_1.state=down, s_1.connected^{up}=w_1, s_1.connected^{down}=w_2, s_1.ok=true, \\
 					s_2.type=switch, s_2.state=up, s_2.connected^{up}=w_1, s_2.connected^{down}=w_2, s_2.ok=true, \\
 					s_3.type=switch, s_3.state=up, s_3.connected^{up}=w_4, s_3.ok=true, \\
