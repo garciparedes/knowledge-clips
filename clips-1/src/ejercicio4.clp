@@ -1,3 +1,7 @@
+;Sergio Garcia Prado
+;Oscar Fernandez Angulo
+;13/12/2016
+
 ;Ejericio 4. Modelar el asistente al diagnostico propuesto por Pool y Mackworth.
 
 ;Plantilla objeto-atributo-valor
@@ -184,7 +188,7 @@
 	(assert (oav (objeto ?bombilla) (atributo luce) (valor true)))
 )
 
-;Garantiza que no haya dos atributos iguales del mismo objeto
+;Garantizar la semantica univaluada:
 (defrule garantizar-semantica
         (declare (salience 10000))
         ?f1 <- (oav (objeto ?objeto) (atributo ?atributo))

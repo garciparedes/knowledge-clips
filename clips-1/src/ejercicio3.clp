@@ -1,3 +1,7 @@
+;Sergio Garcia Prado
+;Oscar Fernandez Angulo
+;13/12/2016
+
 ;Ejercicio 3. Modelar el asistente de diagnostico para automóbiles.
 
 
