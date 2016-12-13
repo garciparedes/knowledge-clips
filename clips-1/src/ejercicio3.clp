@@ -1,4 +1,4 @@
-;Ejercicio 3. Modelar el asistente de diagnostico para automóbiles.
+;Ejercicio 3. Modelar el asistente de diagnostico para automï¿½biles.
 
 
 ;Plantilla objeto-atributo-valor
@@ -76,4 +76,3 @@
         =>
         (assert (oav (objeto deposito) (atributo estado) (valor vacio)))
 )
-
