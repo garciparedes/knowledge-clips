@@ -73,58 +73,48 @@
 		La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Esto se describe a continuación a partir de la Definición del Dominio (DD) y el conjunto de reglas:
 
 		\begin{equation*}
-			O = \{comportamientoMotor, potencia, combustibleEnMotor, fusible, bateria, depositoCombustible, solucion \}
+			O = \{coche, motor, potencia, bateria, fusible, combustible, deposito \}
 		\end{equation*}
 
 		\begin{multline*}
 			DA = \{ \\
-				comportamientoMotor.observacion^s:\{noArranca, sePara, correcto\} \\
-				potencia.estado^s:\{desconectada, conectada\} \\
-				combustibleEnMotor.estado^s:\{f, t\} \\
-				fusible.observacion^s:\{fundido, correcto\}, fusible.estado^s:\{fundido, correcto\} \\
-				bateria.observacion^s:number, bateria.estado^s:\{baja, normal\} \\
-				depositoCombustible.observacion^s:number, depositoCombustible.estado^s:\{vacio, noVacio\} \\
-				solucion.causa^s:\{fusibleFundido, bateriaBaja, sinCombustible\} \\
+				coche.sePara^s:boolean \\
+				motor.arranca^s:boolean, motor.combustible^s:boolean, \\
+				potencia.conectada^s:boolean \\
+				bateria.indicador^s:number, bateria.estado^s,\\
+				fusible.inspeccion^s, fusible.estado^s, \\
+				combustible.indicador^s:number, \\
+				deposito.estado^s \\
 			\}
 		\end{multline*}
 
 
 		\begin{enumerate}[label={\textbf{R\theenumi:}}]
-			\item
-				\textbf{if} $equals(comportamientoMotor, observacion, noArranca)$ \\
-				\textbf{then} $add(potencia, estado, desconectada)$ \textbf{fi}
 
 			\item
-				\textbf{if} $equals(comportamientoMotor, observacion, noArranca)$ \\
-				\textbf{then} $add(combustibleEnMotor, estado, f)$ \textbf{fi}
+				\textbf{if} $equals(motor, arranca, false)$ \\
+				\textbf{then} $add(potencia, conectada, false)$ \textbf{fi}
 
 			\item
-				\textbf{if} $equals(comportamientoMotor, observacion, sePara)$ \\
-				\textbf{then} $add(combustibleEnMotor, estado, f)$ \textbf{fi}
+				\textbf{if} $equals(motor, arranca, false)$ \\
+				\textbf{then} $add(motor, combustible, false)$ \textbf{fi}
 
 			\item
-				\textbf{if} $equals(potencia, estado, desconectada)$ \textbf{and} $equals(fusible, observacion, fundido)$ \\
+				\textbf{if} $equals(coche, sePara, true)$ \\
+				\textbf{then} $add(motor, combustible, false)$ \textbf{fi}
+
+			\item
+				\textbf{if} $equals(potencia, conectada, false)$ \textbf{and} $equals(fusible, inspeccion, roto)$ \\
 				\textbf{then} $add(fusible, estado, fundido)$ \textbf{fi}
 
 			\item
-				\textbf{if} $equals(potencia, estado, desconectada)$ \textbf{and} $equals(bateria, observacion, cero)$ \\
+				\textbf{if} $equals(potencia, conectada, false)$ \textbf{and} $equals(bateria, indicador, 0)$ \\
 				\textbf{then} $add(bateria, estado, baja)$ \textbf{fi}
 
 			\item
-				\textbf{if} $equals(combustibleEnMotor, estado, f)$ \textbf{and} $equals(depositoCombustible, observacion, cero)$ \\
-				\textbf{then} $add(depositoCombustible, estado, vacio)$ \textbf{fi}
+				\textbf{if} $equals(motor, combustible, false)$ \textbf{and} $equals(combustible, indicador, cero)$ \\
+				\textbf{then} $add(deposito, estado, vacio)$ \textbf{fi}
 
-			\item
-				\textbf{if} $equals(fusible, estado, fundido)$ \\
-				\textbf{then} $add(solucion, causa, fusibleFundido)$ \textbf{fi}
-
-			\item
-				\textbf{if} $equals(bateria, estado, baja)$ \\
-				\textbf{then} $add(solucion, causa, bateriaBaja)$ \textbf{fi}
-
-			\item
-				\textbf{if} $equals(depositoCombustible, estado, vacio)$ \\
-				\textbf{then} $add(solucion, causa, sinCombustible)$ \textbf{fi}
 
 		\end{enumerate}
 
