@@ -1,4 +1,4 @@
-;Ejercicio 3. Modelar el asistente de diagnostico para autom�biles.
+;Ejercicio 3. Modelar el asistente de diagnostico para automoviles.
 
 
 ;Plantilla objeto-atributo-valor
