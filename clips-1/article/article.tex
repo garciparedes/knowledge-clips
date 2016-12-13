@@ -60,30 +60,90 @@
 %-------------------------------------------------------------------------------
 
 
-	\begin{figure}[H]
-		\begin{center}
-			\includegraphics[width=0.75\textwidth]{exercise-3-network}
-		\end{center}
-	\end{figure}
 
     \section{La figura muestra un fragmento de una red causal que modela conocimiento del dominio para la tarea de diagnosis en el dominio de los automóviles. La red asocia posibles causas de fallo (fusible fundido, batería baja o depósito de combustible vacío) con estados intermedios (potencia, combustible en motor y síntomas comportamiento motor, inspección fusible, indicador batería...) Se puede observar que la red refleja la dirección causal: la causa ``Depósito de combustible vacío'' tiene como efecto ``Combustible en motor falso'' que a su vez es causa de ``Comportamiento motor se para''.}
 
-        \paragraph{}
-		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		\begin{figure}[H]
+			\begin{center}
+				\includegraphics[width=0.75\textwidth]{exercise-3-network}
+			\end{center}
+		\end{figure}
+
+		\paragraph{}
+		La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Esto se describe a continuación a partir de la Definición del Dominio (DD) y el conjunto de reglas:
+
+		\begin{equation*}
+			O = \{comportamientoMotor, potencia, combustibleEnMotor, fusible, bateria, depositoCombustible, solucion \}
+		\end{equation*}
+
+		\begin{multline*}
+			DA = \{ \\
+				l_i.live^s:boolean, l_i.type^s, l_i.lit^s:boolean, l_i.ok^s:boolean, \\
+				comportamientoMotor.observacion:\{noArranca, sePara, correcto\} \\
+				potencia.estado:\{desconectada, conectada\} \\
+				combustibleEnMotor.estado:\{f, t\} \\
+				fusible.observacion:\{fundido, correcto\}, fusible.estado:\{fundido, correcto\} \\
+				bateria.observacion:number, bateria.estado:\{baja, normal\} \\
+				depositoCombustible.observacion:number, depositoCombustible.estado:\{vacio, noVacio\} \\
+				solucion.causa:\{fusibleFundido, bateriaBaja, sinCombustible\} \\
+			\}
+		\end{multline*}
 
 
-	\begin{figure}[H]
-		\begin{center}
-			\includegraphics[width=0.6\textwidth]{diagnostic-assistant}
-		\end{center}
-	\end{figure}
+		\begin{enumerate}[label={\textbf{R\theenumi:}}]
+			\item
+				\textbf{if} $equals(comportamientoMotor, observacion, noArranca)$ \\
+				\textbf{then} $add(potencia, estado, desconectada)$ \textbf{fi}
 
+			\item
+				\textbf{if} $equals(comportamientoMotor, observacion, noArranca)$ \\
+				\textbf{then} $add(combustibleEnMotor, estado, f)$ \textbf{fi}
+
+			\item
+				\textbf{if} $equals(comportamientoMotor, observacion, sePara)$ \\
+				\textbf{then} $add(combustibleEnMotor, estado, f)$ \textbf{fi}
+
+			\item
+				\textbf{if} $equals(potencia, estado, desconectada)$ \textbf{and} $equals(fusible, observacion, fundido)$ \\
+				\textbf{then} $add(fusible, estado, fundido)$ \textbf{fi}
+
+			\item
+				\textbf{if} $equals(potencia, estado, desconectada)$ \textbf{and} $equals(bateria, observacion, cero)$ \\
+				\textbf{then} $add(bateria, estado, baja)$ \textbf{fi}
+
+			\item
+				\textbf{if} $equals(combustibleEnMotor, estado, f)$ \textbf{and} $equals(depositoCombustible, observacion, cero)$ \\
+				\textbf{then} $add(depositoCombustible, estado, vacio)$ \textbf{fi}
+
+			\item
+				\textbf{if} $equals(fusible, estado, fundido)$ \\
+				\textbf{then} $add(solucion, causa, fusibleFundido)$ \textbf{fi}
+
+			\item
+				\textbf{if} $equals(bateria, estado, baja)$ \\
+				\textbf{then} $add(solucion, causa, bateriaBaja)$ \textbf{fi}
+
+			\item
+				\textbf{if} $equals(depositoCombustible, estado, vacio)$ \\
+				\textbf{then} $add(solucion, causa, sinCombustible)$ \textbf{fi}
+
+		\end{enumerate}
+
+
+
+	\clearpage
 	\section{Considerar el asistente al diagnostico propuesto por Pool y Mackworth}
+
+		\begin{figure}[H]
+			\begin{center}
+				\includegraphics[width=0.6\textwidth]{diagnostic-assistant}
+			\end{center}
+		\end{figure}
 
 		\subsection{Ontología General}
 
 			\paragraph{}
-			La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Mientras que el conjunto de objetos se ha referenciado de forma particular, la declaración de atributos (DA) se ha dejado especificada de manera general para poder ser aprovechada para su reutilziación en otros problemas utilzando subíndices:
+			La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Mientras que el conjunto de objetos se ha referenciado de forma particular, la declaración de atributos (DA) se ha dejado especificada de manera general para poder ser aprovechada para su reutilziación en otros problemas utilizando subíndices:
 
 			\begin{equation*}
 				O = \{l_1, l_2, p_1, p_2, s_1, s_2, s_3, cb_1 cb_2, w_1, w_2, w_3, w_4, w_5, w_6, outside\}
@@ -115,6 +175,10 @@
 				\item
 					\textbf{if} $equals(?x, type, ligth)$ \textbf{and} $equals(?x, live, t)$ \textbf{and} $equals(?x, ok, t)$ \\
 					\textbf{then} $add(?x, lit, t)$ \textbf{fi}
+
+				\item
+					\textbf{if} $equals(?x, type, power_outlet)$ \textbf{and} $equals(?x, live, t)$ \textbf{and} $equals(?x, ok, t)$ \\
+					\textbf{then} $add(?x, electrize, t)$ \textbf{fi}
 
 				\item
 					\textbf{if} $equals(?x, type, switch)$ \textbf{and} $equals(?x, live, t)$ \textbf{and} $equals(?x, state, ?y)$ \\
