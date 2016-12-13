@@ -12,6 +12,8 @@
 
 \usepackage{amsmath}
 
+\usepackage{enumitem}
+
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 
@@ -112,5 +114,32 @@
 				\includegraphics[width=0.75\textwidth]{table-2}
 			\end{center}
 		\end{figure}
+
+		\paragraph{}
+		La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Esto se describe a continuación a partir de la Definición del Dominio (DD) y el conjunto de reglas:
+
+		\begin{equation*}
+			O = \{paciente, enfermedad, queja, riesgo \}
+		\end{equation*}
+
+		\begin{multline*}
+			DA = \{ \\
+				enfermedad.tipo^s, enfermedad.subtipo^s, enfermedad.lugar^s, \\
+				paciente.edad^s:number, paciente.queja^m, \\
+				paciente.sistolica^s:number, paciente.sistolica^s:number, paciente.pulso^s:number, \\
+				paciente.auscultacion^m, paciente.riesgo^m \\
+				queja.nombre^s, queja.duracion^s:number, queja.lugar^s\\
+				riesgo.nombre^s, riesgo.duraccion^s:number\\
+			\}
+		\end{multline*}
+
+
+		\begin{enumerate}[label={\textbf{R\theenumi:}}]
+
+			\item
+				\textbf{if} $equals(combustibleEnMotor, estado, f)$ \textbf{and} $equals(depositoCombustible, observacion, cero)$ \\
+				\textbf{then} $add(depositoCombustible, estado, vacio)$ \textbf{fi}
+
+		\end{enumerate}
 
 \end{document}

@@ -78,14 +78,13 @@
 
 		\begin{multline*}
 			DA = \{ \\
-				l_i.live^s:boolean, l_i.type^s, l_i.lit^s:boolean, l_i.ok^s:boolean, \\
-				comportamientoMotor.observacion:\{noArranca, sePara, correcto\} \\
-				potencia.estado:\{desconectada, conectada\} \\
-				combustibleEnMotor.estado:\{f, t\} \\
-				fusible.observacion:\{fundido, correcto\}, fusible.estado:\{fundido, correcto\} \\
-				bateria.observacion:number, bateria.estado:\{baja, normal\} \\
-				depositoCombustible.observacion:number, depositoCombustible.estado:\{vacio, noVacio\} \\
-				solucion.causa:\{fusibleFundido, bateriaBaja, sinCombustible\} \\
+				comportamientoMotor.observacion^s:\{noArranca, sePara, correcto\} \\
+				potencia.estado^s:\{desconectada, conectada\} \\
+				combustibleEnMotor.estado^s:\{f, t\} \\
+				fusible.observacion^s:\{fundido, correcto\}, fusible.estado^s:\{fundido, correcto\} \\
+				bateria.observacion^s:number, bateria.estado^s:\{baja, normal\} \\
+				depositoCombustible.observacion^s:number, depositoCombustible.estado^s:\{vacio, noVacio\} \\
+				solucion.causa^s:\{fusibleFundido, bateriaBaja, sinCombustible\} \\
 			\}
 		\end{multline*}
 
@@ -155,7 +154,7 @@
 					p_i.live^s:boolean, p_i.type^s, p_i.electrize^s:boolean, p_i.ok^s:boolean, \\
 					s_j.live^s:boolean, s_j.type^s, s_j.state^s, s_j.connected^m, s_j.ok^s:boolean, \\
 					cb_k.live^s:boolean, cb_k.type^s, cb_k.ok^s:boolean, cb_k.connected^s, \\
-					w_l.live^s:boolean, w_l.type^s, w_l.ok^s:boolean, w_l.connected^s, \\
+					w_l.live^s:boolean, w_l.type^s, w_l.ok^s:boolean, w_l.connected^m, \\
 					outside.live^s:boolean, outside.ok^s:boolean, outside.connected^s \\
 				\}
 			\end{multline*}
