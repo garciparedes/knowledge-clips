@@ -72,66 +72,82 @@
 
 		\end{enumerate}
 
-		\paragraph{}
-		La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Esto se describe a continuación a partir de la Definición del Dominio (DD) y el conjunto de reglas:
+		\subsection{Ontología General}
 
-		\begin{multline*}
-			O = \{ \\
-				\{marta, luis\} \in paciente, \\
-				\{aneurisma\_arteria\_abdominal, regurgitacion\_aortica, \\
-				estenosis\_arteria\_pierna, arterio\_esclerosis \} \in enfermedad \\
-			\}
-		\end{multline*}
+			\paragraph{}
+			La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Esto se describe a continuación a partir de la Definición del Dominio (DD) y el conjunto de reglas:
 
-		\begin{multline*}
-			DA = \{ \\
-				paciente.genero^s:{hombre, mujer}, paciente.edad^s:number, \\
-				paciente.sintomas^m, paciente.observacion^m, \\
-				paciente.sistolica^s:number, paciente.diastolica^s:number, paciente.pulso^s:number, \\
-				paciente.riesgo^s:boolean, paciente.peso^s, paciente.fuma^s:number \\
-				paciente.diagnostico^s \\
-				enfermedad.afecta^m, enfermedad.tipo^m \\
-			\}
-		\end{multline*}
+			\begin{multline*}
+				O = \{ \\
+					\{marta, luis\} \in paciente, \\
+					\{aneurisma\_arteria\_abdominal, regurgitacion\_aortica, \\
+					estenosis\_arteria\_pierna, arterio\_esclerosis \} \in enfermedad \\
+				\}
+			\end{multline*}
 
-
-		\begin{enumerate}[label={\textbf{R\theenumi:}}]
-
-			\item
-				\textbf{if} $equals(?x, sistolica, ?y)$ \textbf{and} $equals(?x, diastolica, ?z)$ \\
-				\textbf{then} $add(?x, pulso, (?y - ?z) )$ \textbf{fi}
-
-			\item
-				\textbf{if} $equals(?x, peso, obeso)$ \textbf{or} $greaterThan(?x, fuma, 15)$ \textbf{or} $greaterThan(?x, edad, 60)$ \\
-				\textbf{then} $add(?x, riesgo, t)$ \textbf{fi}
-
-			\item
-				\textbf{if} $equals(?x, evidencia, rumor\_abdominal)$ \textbf{and} $equals(?x, evidencia, masa\_pulsante\_abdomen)$ \\
-				\textbf{then} $add(?x, diagnostico, aneurisma\_arteria\_abdominal)$ \textbf{fi}
-
-			\item
-				\textbf{if} $greaterThan(?x, sistolica, 140)$ \textbf{and} $greaterThan(?x, pulso, 50)$ \textbf{or} \\
-				\hspace*{0.5cm} $equals(?x, evidencia, rumor\_sistolico)$ \textbf{and} $equals(?x, evidencia, dilatacion\_corazon)$
-				\textbf{then} $add(?x, diagnostico, regurgitacion\_aortica)$ \textbf{fi}
-
-			\item
-				\textbf{if} $equals(?x, sintomas, calambres\_pierna\_andar)$ \\
-				\textbf{then} $add(?x, diagnostico, estenosis\_arteria\_pierna)$ \textbf{fi}
-
-			\item
-				\textbf{if} $equals(?x, sintomas, estenosis\_arteria\_pierna)$ \textbf{and} $equals(?x, riesgo, t)$ \\
-				\textbf{then} $add(?x, diagnostico, arterio\_esclerosis)$ \textbf{fi}
-
-			\item
-				\textbf{if} $equals(?x, afecta, vasos\_sanguineos)$ \textbf{or} $equals(?x, afecta, corazon)$ \\
-				\textbf{then} $add(?x, tipo, cardio\_vascular)$ \textbf{fi}
-
-		\end{enumerate}
+			\begin{multline*}
+				DA = \{ \\
+					paciente.genero^s:{hombre, mujer}, paciente.edad^s:number, \\
+					paciente.sintomas^m, paciente.observacion^m, \\
+					paciente.sistolica^s:number, paciente.diastolica^s:number, paciente.pulso^s:number, \\
+					paciente.riesgo^s:boolean, paciente.peso^s, paciente.fuma^s:number \\
+					paciente.diagnostico^s \\
+					enfermedad.afecta^m, enfermedad.tipo^m \\
+				\}
+			\end{multline*}
 
 
-		\begin{figure}[H]
-			\begin{center}
-				\includegraphics[width=0.75\textwidth]{table-2}
-			\end{center}
-		\end{figure}
+			\begin{enumerate}[label={\textbf{R\theenumi:}}]
+
+				\item
+					\textbf{if} $equals(?x, sistolica, ?y)$ \textbf{and} $equals(?x, diastolica, ?z)$ \\
+					\textbf{then} $add(?x, pulso, (?y - ?z) )$ \textbf{fi}
+
+				\item
+					\textbf{if} $equals(?x, peso, obeso)$ \textbf{or} $greaterThan(?x, fuma, 15)$ \textbf{or} $greaterThan(?x, edad, 60)$ \\
+					\textbf{then} $add(?x, riesgo, true)$ \textbf{fi}
+
+				\item
+					\textbf{if} $equals(?x, evidencia, rumor\_abdominal)$ \textbf{and} $equals(?x, evidencia, masa\_pulsante\_abdomen)$ \\
+					\textbf{then} $add(?x, diagnostico, aneurisma\_arteria\_abdominal)$ \textbf{fi}
+
+				\item
+					\textbf{if} $greaterThan(?x, sistolica, 140)$ \textbf{and} $greaterThan(?x, pulso, 50)$ \textbf{or} \\
+					\hspace*{0.5cm} $equals(?x, evidencia, rumor\_sistolico)$ \textbf{and} $equals(?x, evidencia, dilatacion\_corazon)$
+					\textbf{then} $add(?x, diagnostico, regurgitacion\_aortica)$ \textbf{fi}
+
+				\item
+					\textbf{if} $equals(?x, sintomas, calambres\_pierna\_andar)$ \\
+					\textbf{then} $add(?x, diagnostico, estenosis\_arteria\_pierna)$ \textbf{fi}
+
+				\item
+					\textbf{if} $equals(?x, sintomas, estenosis\_arteria\_pierna)$ \textbf{and} $equals(?x, riesgo, true)$ \\
+					\textbf{then} $add(?x, diagnostico, arterio\_esclerosis)$ \textbf{fi}
+
+				\item
+					\textbf{if} $equals(?x, afecta, vasos\_sanguineos)$ \textbf{or} $equals(?x, afecta, corazon)$ \\
+					\textbf{then} $add(?x, tipo, cardio\_vascular)$ \textbf{fi}
+
+			\end{enumerate}
+
+		\subsection{Ontología Específica}
+
+			\begin{figure}[H]
+				\begin{center}
+					\includegraphics[width=0.75\textwidth]{table-2}
+				\end{center}
+			\end{figure}
+
+			\begin{equation*}
+				\begin{split}
+					marta.genero=mujer, marta.edad=12 \\
+					marta.sintomas=\{fiebre\}, \\
+					marta.observacion=\{rumor\_diastolico\}, \\
+					marta.sistolica=150, marta.diastolica=60,\\
+					luis.genero=hombre, luis.edad=60 \\
+					luis.sintomas=\{dolor\_abdominal\}, \\
+					luis.observacion=\{rumor\_abdominal, masa\_pulsante\_abdomen\}, \\
+					luis.sistolica=130, luis.diastolica=90\\
+				\end{split}
+			\end{equation*}
 \end{document}
