@@ -86,12 +86,13 @@
 			La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Mientras que el conjunto de objetos se ha referenciado de forma particular, la declaración de atributos (DA) se ha dejado especificada de manera general para poder ser aprovechada para su reutilziación en otros problemas utilzando subíndices:
 
 			\begin{equation*}
-				O = \{l_2, s_3, cb_1, w_3,w_4, w_5, outside\}
+				O = \{l_1, l_2, p_1, p_2, s_1, s_2, s_3, cb_1 cb_2, w_1, w_2, w_3, w_4, w_5, w_6, outside\}
 			\end{equation*}
 
 			\begin{multline*}
 				DA = \{ \\
 					l_i.live^s:boolean, l_i.type^s, l_i.lit^s:boolean, l_i.ok^s:boolean, \\
+					p_i.live^s:boolean, p_i.type^s, p_i.electrize^s:boolean, p_i.ok^s:boolean, \\
 					s_j.live^s:boolean, s_j.type^s, s_j.state^s, s_j.connected^m, s_j.ok^s:boolean, \\
 					cb_k.live^s:boolean, cb_k.type^s, cb_k.ok^s:boolean, cb_k.connected^s, \\
 					w_l.live^s:boolean, w_l.type^s, w_l.ok^s:boolean, w_l.connected^s, \\
@@ -127,12 +128,22 @@
 
 			\begin{equation*}
 				\begin{split}
+					l_1.type=ligth, l_1.ok=true, \\
 					l_2.type=ligth, l_2.ok=true, \\
-					s_3.type=switch, s_j.state=up, s_j.connected^{up}=w_4, s_j.ok=true, \\
-					cb_1.type=circuit_breaker, cb_1.ok=true, cb_1.connected=w_3, \\
-					w_3.type=wire, w_l.ok=true, w_l.connected=s_3, \\
-					w_4.type=wire, w_l.ok=true, w_l.connected=l_2, \\
-					w_5.type=wire, w_l.ok=true, w_l.connected=cb_1, \\
+					p_1.type=power_outlet, p_1.ok=true, \\
+					p_2.type=power_outlet, p_2.ok=true, \\
+					s_1.type=switch, s_1.state=down, s_1.connected^{up}=w_1, s_1.connected^{down}=w_2, s_1.ok=true, \\
+					s_2.type=switch, s_2.state=up, s_2.connected^{up}=w_1, s_2.connected^{down}=w_2, s_2.ok=true, \\
+					s_3.type=switch, s_3.state=up, s_3.connected^{up}=w_4, s_3.ok=true, \\
+					cb_1.type=circuit_breaker, cb_1.connected=w_3, cb_1.ok=true,\\
+					cb_2.type=circuit_breaker, cb_2.connected=w_6, cb_2.ok=true,\\
+					w_0.type=wire, w_1.ok=true, w_0.connected=l_1,\\
+					w_1.type=wire, w_1.ok=true, \\
+					w_2.type=wire, w_2.ok=true, \\
+					w_3.type=wire, w_3.ok=true, w_3.connected=\{s_1, s_3, p1\}, \\
+					w_4.type=wire, w_4.ok=true, w_4.connected=l_2, \\
+					w_5.type=wire, w_5.ok=true, w_5.connected=\{cb_1, cb_2\}, \\
+					w_6.type=wire, w_6.ok=true, w_6.connected=p2, \\
 					outside.live=true, outside.ok=true, outside.connected=w_5
 				\end{split}
 			\end{equation*}
