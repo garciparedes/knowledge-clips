@@ -80,4 +80,3 @@
         =>
         (assert (oav (objeto deposito) (atributo estado) (valor vacio)))
 )
-

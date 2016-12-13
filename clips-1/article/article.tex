@@ -61,7 +61,7 @@
 
 
 
-    \section{La figura muestra un fragmento de una red causal que modela conocimiento del dominio para la tarea de diagnosis en el dominio de los automóviles. La red asocia posibles causas de fallo (fusible fundido, batería baja o depósito de combustible vacío) con estados intermedios (potencia, combustible en motor y síntomas comportamiento motor, inspección fusible, indicador batería...) Se puede observar que la red refleja la dirección causal: la causa ``Depósito de combustible vacío'' tiene como efecto ``Combustible en motor falso'' que a su vez es causa de ``Comportamiento motor se para''.}
+    \section{La figura muestra un fragmento de una red causal que modela conocimiento del dominio para la tarea de diagnosis en el dominio de los automóviles. La red asocia posibles causas de fallo (fusible fundido, batería baja o depósito de combustible vacío) con estados intermedios (potencia, combustible en motor y síntomas comportamiento motor, inspección fusible, indicador batería...).}
 
 		\begin{figure}[H]
 			\begin{center}
@@ -70,61 +70,65 @@
 		\end{figure}
 
 		\paragraph{}
-		La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Esto se describe a continuación a partir de la Definición del Dominio (DD) y el conjunto de reglas:
+		La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Esto se describe a continuación a partir de la Definición del Dominio (DD), el cual se compone del conjunto de Objetos (O) y la Definición de Atributos (DA):
 
 		\begin{equation*}
-			O = \{comportamientoMotor, potencia, combustibleEnMotor, fusible, bateria, depositoCombustible, solucion \}
+			O = \{coche, motor, potencia, bateria, fusible, combustible, deposito \}
 		\end{equation*}
 
 		\begin{multline*}
 			DA = \{ \\
-				comportamientoMotor.observacion^s:\{noArranca, sePara, correcto\} \\
-				potencia.estado^s:\{desconectada, conectada\} \\
-				combustibleEnMotor.estado^s:\{f, t\} \\
-				fusible.observacion^s:\{fundido, correcto\}, fusible.estado^s:\{fundido, correcto\} \\
-				bateria.observacion^s:number, bateria.estado^s:\{baja, normal\} \\
-				depositoCombustible.observacion^s:number, depositoCombustible.estado^s:\{vacio, noVacio\} \\
-				solucion.causa^s:\{fusibleFundido, bateriaBaja, sinCombustible\} \\
+				coche.sePara^s:boolean \\
+				motor.arranca^s:boolean, motor.combustible^s:boolean, \\
+				potencia.conectada^s:boolean \\
+				bateria.indicador^s:number, bateria.estado^s,\\
+				fusible.inspeccion^s, fusible.estado^s, \\
+				combustible.indicador^s:number, \\
+				deposito.estado^s \\
 			\}
 		\end{multline*}
 
+		\paragraph{}
+		A continuación se describe el conjunto de reglas de la base de conocimiento:
 
 		\begin{enumerate}[label={\textbf{R\theenumi:}}]
-			\item
-				\textbf{if} $equals(comportamientoMotor, observacion, noArranca)$ \\
-				\textbf{then} $add(potencia, estado, desconectada)$ \textbf{fi}
 
 			\item
-				\textbf{if} $equals(comportamientoMotor, observacion, noArranca)$ \\
-				\textbf{then} $add(combustibleEnMotor, estado, f)$ \textbf{fi}
+				\textbf{if} $equals(motor, arranca, false)$ \\
+				\textbf{then} $add(potencia, conectada, false)$ \textbf{fi}
+				\\ \\
+				En el caso de que el motor no arranque, significa que no está conectada la potencia.
 
 			\item
-				\textbf{if} $equals(comportamientoMotor, observacion, sePara)$ \\
-				\textbf{then} $add(combustibleEnMotor, estado, f)$ \textbf{fi}
+				\textbf{if} $equals(motor, arranca, false)$ \\
+				\textbf{then} $add(motor, combustible, false)$ \textbf{fi}
+				\\ \\
+				Si el motor no arranca otra de las posibles causas es que no tenga combustible.
 
 			\item
-				\textbf{if} $equals(potencia, estado, desconectada)$ \textbf{and} $equals(fusible, observacion, fundido)$ \\
+				\textbf{if} $equals(coche, sePara, true)$ \\
+				\textbf{then} $add(motor, combustible, false)$ \textbf{fi}
+				\\ \\
+				La causa de que el coche se haya parado viene dada por la falta de combustible en el motor.
+
+			\item
+				\textbf{if} $equals(potencia, conectada, false)$ \textbf{and} $equals(fusible, inspeccion, roto)$ \\
 				\textbf{then} $add(fusible, estado, fundido)$ \textbf{fi}
+				\\ \\
+				Si la potencia no está conecta y la inspección del fusible determina que este está roto entonces se puede determinar que el estado del fusible es fundido.
 
 			\item
-				\textbf{if} $equals(potencia, estado, desconectada)$ \textbf{and} $equals(bateria, observacion, cero)$ \\
+				\textbf{if} $equals(potencia, conectada, false)$ \textbf{and} $equals(bateria, indicador, 0)$ \\
 				\textbf{then} $add(bateria, estado, baja)$ \textbf{fi}
+				\\ \\
+				Si la potencia no está conectada y la batería indica el valor cero entonces el estado de la batería es baja.
 
 			\item
-				\textbf{if} $equals(combustibleEnMotor, estado, f)$ \textbf{and} $equals(depositoCombustible, observacion, cero)$ \\
-				\textbf{then} $add(depositoCombustible, estado, vacio)$ \textbf{fi}
+				\textbf{if} $equals(motor, combustible, false)$ \textbf{and} $equals(combustible, indicador, 0)$ \\
+				\textbf{then} $add(deposito, estado, vacio)$ \textbf{fi}
+				\\ \\
+				Si no llega combustible al motor y además el indicador de compustible indica el valor cero entronces el resultado es que el depósito está vacío.
 
-			\item
-				\textbf{if} $equals(fusible, estado, fundido)$ \\
-				\textbf{then} $add(solucion, causa, fusibleFundido)$ \textbf{fi}
-
-			\item
-				\textbf{if} $equals(bateria, estado, baja)$ \\
-				\textbf{then} $add(solucion, causa, bateriaBaja)$ \textbf{fi}
-
-			\item
-				\textbf{if} $equals(depositoCombustible, estado, vacio)$ \\
-				\textbf{then} $add(solucion, causa, sinCombustible)$ \textbf{fi}
 
 		\end{enumerate}
 
@@ -199,9 +203,9 @@
 					l_2.type=ligth, l_2.ok=true, \\
 					p_1.type=power\_outlet, p_1.ok=true, \\
 					p_2.type=power\_outlet, p_2.ok=true, \\
-					s_1.type=switch, s_1.state=down, s_1.connected^{up}=w_1, s_1.connected^{down}=w_2, s_1.ok=true, \\
-					s_2.type=switch, s_2.state=up, s_2.connected^{up}=w_1, s_2.connected^{down}=w_2, s_2.ok=true, \\
-					s_3.type=switch, s_3.state=up, s_3.connected^{up}=w_4, s_3.ok=true, \\
+					s_1.type=switch, s_1.state=down, s_1.up=w_1, s_1.down=w_2, s_1.ok=true, \\
+					s_2.type=switch, s_2.state=up, s_2.up=w_1, s_2.down=w_2, s_2.ok=true, \\
+					s_3.type=switch, s_3.state=up, s_3.up=w_4, s_3.ok=true, \\
 					cb_1.type=circuit_breaker, cb_1.connected=w_3, cb_1.ok=true,\\
 					cb_2.type=circuit_breaker, cb_2.connected=w_6, cb_2.ok=true,\\
 					w_0.type=wire, w_1.ok=true, w_0.connected=l_1,\\

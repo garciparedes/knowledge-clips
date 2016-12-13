@@ -72,37 +72,103 @@
 
 		\end{enumerate}
 
-		\paragraph{}
-		La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Esto se describe a continuación a partir de la Definición del Dominio (DD) y el conjunto de reglas:
+		\subsection{Ontología General}
 
-		\begin{equation*}
-			O = \{paciente, enfermedad, queja, riesgo \}
-		\end{equation*}
+			\paragraph{}
+			La base de conocimiento necesaria para representar el problema requiere de un conjunto tanto de objetos como de atributos de los mismos. Esto se describe a continuación a partir de la Definición del Dominio (DD) y el conjunto de reglas:
 
-		\begin{multline*}
-			DA = \{ \\
-				enfermedad.tipo^s, enfermedad.subtipo^s, enfermedad.lugar^s, \\
-				paciente.edad^s:number, paciente.queja^m, \\
-				paciente.sistolica^s:number, paciente.sistolica^s:number, paciente.pulso^s:number, \\
-				paciente.auscultacion^m, paciente.riesgo^m \\
-				queja.nombre^s, queja.duracion^s:number, queja.lugar^s\\
-				riesgo.nombre^s, riesgo.duraccion^s:number\\
-			\}
-		\end{multline*}
+			\begin{multline*}
+				O = \{ \\
+					\{marta, luis\} \in paciente, \\
+					\{aneurisma\_arteria\_abdominal, regurgitacion\_aortica, \\
+					estenosis\_arteria\_pierna, arterio\_esclerosis \} \in enfermedad \\
+				\}
+			\end{multline*}
+
+			\begin{multline*}
+				DA = \{ \\
+					paciente.genero^s:{hombre, mujer}, paciente.edad^s:number, \\
+					paciente.sintomas^m, paciente.observacion^m, \\
+					paciente.sistolica^s:number, paciente.diastolica^s:number, paciente.pulso^s:number, \\
+					paciente.riesgo^s:boolean, paciente.peso^s, paciente.fuma^s:number \\
+					paciente.diagnostico^s \\
+					enfermedad.afecta^m, enfermedad.tipo^m \\
+				\}
+			\end{multline*}
 
 
-		\begin{enumerate}[label={\textbf{R\theenumi:}}]
+			\begin{enumerate}[label={\textbf{R\theenumi:}}]
 
-			\item
-				\textbf{if} $equals(combustibleEnMotor, estado, f)$ \textbf{and} $equals(depositoCombustible, observacion, cero)$ \\
-				\textbf{then} $add(depositoCombustible, estado, vacio)$ \textbf{fi}
+				\item
+					\textbf{if} $equals(?x, sistolica, ?y)$ \textbf{and} $equals(?x, diastolica, ?z)$ \\
+					\textbf{then} $add(?x, pulso, (?y - ?z) )$ \textbf{fi}
+					\\ \\
+					Calcula el pulso a partir del valor de la presión sistólica y diástólica del paciente.
 
-		\end{enumerate}
-		
+				\item
+					\textbf{if} $equals(?x, peso, obeso)$ \textbf{or} $greaterThan(?x, fuma, 15)$ \textbf{or} $greaterThan(?x, edad, 60)$ \\
+					\textbf{then} $add(?x, riesgo, true)$ \textbf{fi}
+ 					\\ \\
+					Si el paciente tiene un peso elevado, fuma desde hace 15 años o su edad es mayor de 60.
 
-		\begin{figure}[H]
-			\begin{center}
-				\includegraphics[width=0.75\textwidth]{table-2}
-			\end{center}
-		\end{figure}
+				\item
+					\textbf{if} $equals(?x, evidencia, rumor\_abdominal)$ \textbf{and} $equals(?x, evidencia, masa\_pulsante\_abdomen)$ \\
+					\textbf{then} $add(?x, diagnostico, aneurisma\_arteria\_abdominal)$ \textbf{fi}
+					\\ \\
+					Si el paciente tiene un rumor abdominal y una masa pulsante en el abdomen entonces sufre de un aneurisma en la arteria abdominal.
+
+				\item
+					\textbf{if} $greaterThan(?x, sistolica, 140)$ \textbf{and} $greaterThan(?x, pulso, 50)$ \textbf{or} \\
+					\hspace*{0.5cm} $equals(?x, evidencia, rumor\_sistolico)$ \textbf{and} $equals(?x, evidencia, dilatacion\_corazon)$
+					\textbf{then} $add(?x, diagnostico, regurgitacion\_aortica)$ \textbf{fi}
+					\\ \\
+					Si la presión sistólica del paciente es mayor que 140 y su pulso que 50 o tiene un rumor sistólico y posee una dilatación en el corazón entonces el diagnóstico es un regurgitación aortical.
+
+				\item
+					\textbf{if} $equals(?x, sintomas, calambres\_pierna\_andar)$ \\
+					\textbf{then} $add(?x, diagnostico, estenosis\_arteria\_pierna)$ \textbf{fi}
+					\\ \\
+					Si el paciente nota calambres en la pierna al caminar entonces pacede de una estonisis arterial en la pierna.
+
+				\item
+					\textbf{if} $equals(?x, sintomas, estenosis\_arteria\_pierna)$ \textbf{and} $equals(?x, riesgo, true)$ \\
+					\textbf{then} $add(?x, diagnostico, arterio\_esclerosis)$ \textbf{fi}
+					\\ \\
+					En el caso de que el paciente cumpla lo descrito en la regla anterior y además se encuentre dentro de un grupo de riesgo entonces padece arterio esclerosis
+
+				\item
+					\textbf{if} $equals(?x, afecta, vasos\_sanguineos)$ \textbf{or} $equals(?x, afecta, corazon)$ \\
+					\textbf{then} $add(?x, tipo, cardio\_vascular)$ \textbf{fi}
+					\\ \\
+					Si la enfermedad afecta a los vasos sanguineos o al corazón entonces el tipo de la enfermedad es cardio vascular.
+
+
+			\end{enumerate}
+
+		\subsection{Ontología Específica}
+
+			\paragraph{}
+			Los casos particulares que se pide codificar para conocer su diagnóstico se recogen en la siguiente tabla:
+
+			\begin{figure}[H]
+				\begin{center}
+					\includegraphics[width=0.75\textwidth]{table-2}
+				\end{center}
+			\end{figure}
+
+			\begin{equation*}
+				\begin{split}
+					marta.genero=mujer, marta.edad=12 \\
+					marta.sintomas=\{fiebre\}, \\
+					marta.observacion=\{rumor\_diastolico\}, \\
+					marta.sistolica=150, marta.diastolica=60,\\
+					luis.genero=hombre, luis.edad=60 \\
+					luis.sintomas=\{dolor\_abdominal\}, \\
+					luis.observacion=\{rumor\_abdominal, masa\_pulsante\_abdomen\}, \\
+					luis.sistolica=130, luis.diastolica=90\\
+				\end{split}
+			\end{equation*}
+
+			\paragraph{}
+			Tras implementar la base de conocimiento descrita en el documento e introducir los casos específicos descritos sabemos que \textbf{Marta} no padece ninguna enfermedad, mientras que \textbf{Luis} padece un \textbf{aneurisma arterial abdominal}.
 \end{document}
