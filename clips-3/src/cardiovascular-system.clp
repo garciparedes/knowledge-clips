@@ -151,17 +151,42 @@
 )
 
 
-; ******************************************************************************
-;
-;	REGLAS
-;
-;	PACIENTE
-;
-;	RIESGO
-;
-;	PESO		EDAD 		FUMADOR
-;
-; ******************************************************************************
+
+
+(defrule R2a "paciente de riesgo"
+	(oavc-u
+		(objeto ?pac) (atributo peso) (valor obeso) (factor ?f) (factor ?f1))
+	(test
+		(> (min ?f1) 0.2))
+	=>
+	(assert (oavc-m
+		(objeto ?pac) (atributo condicion) (valor paciente_riesgo) (factor 0.8)))
+)
+
+
+
+(defrule R2b "paciente de riesgo"
+	(oavc-u
+		(objeto ?pac) (atributo fuma) (valor ?y &:(> ?y 15)) (factor ?f1))
+	(test
+		(> (min ?f1) 0.2))
+	=>
+	(assert (oavc-m
+		(objeto ?pac) (atributo condicion) (valor paciente_riesgo) (factor 0.8)))
+)
+
+
+
+(defrule R2c "paciente de riesgo"
+	(oavc-u
+		(objeto ?pac) (atributo edad) (valor ?y &:(> ?y 50)) (factor ?f1))
+	(test
+		(> (min ?f1) 0.2))
+	=>
+	(assert (oavc-m
+		(objeto ?pac) (atributo condicion) (valor paciente_riesgo) (factor 0.6)))
+)
+
 
 
 
