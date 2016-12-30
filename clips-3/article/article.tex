@@ -77,7 +77,7 @@
 
 			\begin{multline*}
 				O = \{ \\
-					\{marta, luis\} \in paciente, \\
+					\{marta, luis, andres\} \in paciente, \\
 					\{aneurisma\_arteria\_abdominal, regurgitacion\_aortica, \\
 					estenosis\_arteria\_pierna, arterio\_esclerosis \} \in enfermedad \\
 				\}
@@ -99,42 +99,55 @@
 				\item
 					\textbf{if} $equals(?x, sistolica, ?y)$ \textbf{and} \\
 						\hspace*{0.5cm} $equals(?x, diastolica, ?z)$ \\
-					\textbf{then} $add(?x, pulso, (?y - ?z) )$ \textbf{fi}
+					\textbf{then} $add(?x, pulso, (?y - ?z) )$ \textbf{fc} $1.0 $ \textbf{fi}
 					\\ \\
 					Calcula el pulso a partir del valor de la presión sistólica y diástólica del paciente.
 
 				\item
-					\textbf{if} $equals(?x, peso, obeso)$ \textbf{or} \\
-						\hspace*{0.5cm} $greaterThan(?x, fuma, 15)$ \textbf{or} \\
-						\hspace*{0.5cm} $greaterThan(?x, edad, 60)$ \\
-					\textbf{then} $add(?x, riesgo, true)$ \textbf{fi}
+					\textbf{if} $equals(?x, peso, obeso)$ \\
+					\textbf{then} $add(?x, riesgo, true)$ \textbf{fc} $0.8$  \textbf{fi}
 					\\ \\
-					Si el paciente tiene un peso elevado, fuma desde hace 15 años o su edad es mayor de 60.
+					Si el paciente tiene un peso elevado podría ser un paciente de riesgo con un alto grado de probabilidad.
+
+				\item
+					\textbf{if} $greaterThan(?x, fuma, 15)$ \\
+					\textbf{then} $add(?x, riesgo, true)$ \textbf{fc} $0.8$  \textbf{fi}
+					\\ \\
+					Si el paciente fuma desde hace más de 15 años podría ser un paciente de riesgo con un alto grado de probabilidad.
+
+				\item
+					\textbf{if} $greaterThan(?x, edad, 50)$ \\
+					\textbf{then} $add(?x, riesgo, true)$ \textbf{fc} $0.6$  \textbf{fi}
+					\\ \\
+					Si el paciente tiene una edad mayor que 50 años podría ser un paciente de riesgo con un alto grado de probabilidad..
 
 				\item
 					\textbf{if} $equals(?x, evidencia, rumor\_abdominal)$ \textbf{and} \\
 						\hspace*{0.5cm} $equals(?x, evidencia, masa\_pulsante\_abdomen)$ \\
-					\textbf{then} $add(?x, diagnostico, aneurisma\_arteria\_abdominal)$ \textbf{fi}
+					\textbf{then} $add(?x, diagnostico, aneurisma\_arteria\_abdominal)$ \textbf{fc} $0.8$ \textbf{fi}
 					\\ \\
 					Si el paciente tiene un rumor abdominal y una masa pulsante en el abdomen entonces sufre de un aneurisma en la arteria abdominal.
 
 				\item
-					\textbf{if} $greaterThan(?x, sistolica, 140)$ \textbf{and} $greaterThan(?x, pulso, 50)$ \textbf{and} \\
-						\hspace*{0.5cm} $equals(?x, evidencia, rumor\_sistolico)$  \textbf{or}\\
-						\hspace*{0.5cm} $equals(?x, evidencia, dilatacion\_corazon)$ \\
-					\textbf{then} $add(?x, diagnostico, regurgitacion\_aortica)$ \textbf{fi}
+					\textbf{if} $greaterThan(?x, sistolica, 140)$ \textbf{and} \\
+						\hspace*{0.5cm} $greaterThan(?x, pulso, 50)$ \textbf{and} ( \\
+							\hspace*{1cm} $equals(?x, evidencia, rumor\_sistolico)$  \textbf{or}\\
+							\hspace*{1cm} $equals(?x, evidencia, dilatacion\_corazon)$ \\
+						\hspace*{0.5cm} ) \\
+					\textbf{then} $add(?x, diagnostico, regurgitacion\_aortica$ \textbf{fc} $0.7$ \textbf{fi}
 					\\ \\
 					Si la presión sistólica del paciente es mayor que 140 y su pulso que 50 o tiene un rumor sistólico y posee una dilatación en el corazón entonces el diagnóstico es un regurgitación aortical.
 
 				\item
 					\textbf{if} $equals(?x, sintomas, calambres\_pierna\_andar)$ \\
-					\textbf{then} $add(?x, diagnostico, estenosis\_arteria\_pierna)$ \textbf{fi}
+					\textbf{then} $add(?x, diagnostico, estenosis\_arteria\_pierna)$ \textbf{fc} $0.9$ \textbf{fi}
 					\\ \\
 					Si el paciente nota calambres en la pierna al caminar entonces pacede de una estonisis arterial en la pierna.
 
 				\item
-					\textbf{if} $equals(?x, sintomas, estenosis\_arteria\_pierna)$ \textbf{and} $equals(?x, riesgo, true)$ \\
-					\textbf{then} $add(?x, diagnostico, arterio\_esclerosis)$ \textbf{fi}
+					\textbf{if} $equals(?x, sintomas, estenosis\_arteria\_pierna)$ \textbf{and} \\
+						\hspace*{0.5cm}	$equals(?x, riesgo, true)$ \\
+					\textbf{then} $add(?x, diagnostico, arterio\_esclerosis)$ \textbf{fc} $0.8$ \textbf{fi}
 					\\ \\
 					En el caso de que el paciente cumpla lo descrito en la regla anterior y además se encuentre dentro de un grupo de riesgo entonces padece arterio esclerosis
 			\end{enumerate}
@@ -152,19 +165,29 @@
 
 			\begin{equation*}
 				\begin{split}
-					marta.genero=mujer, \\
-					marta.edad=12 \\
-					marta.sintomas=\{fiebre\}, \\
-					marta.observacion=\{rumor\_diastolico\}, \\
-					marta.sistolica=150, \\
-					marta.diastolica=60,\\
+					marta.genero=mujer \ fc \  1.0 \\
+					marta.edad=12 \ fc \  1.0 \\
+					marta.peso=obeso \ fc \  1.0 \\
+					marta.sintomas=\{fiebre \ fc \  0.6\} \\
+					marta.observacion=\{rumor\_diastolico \ fc \  0.8\} \\
+					marta.sistolica=150 \ fc \  1.0 \\
+					marta.diastolica=60 \ fc \  1.0\\
 					\\
-					luis.genero=hombre, \\
-					luis.edad=60, \\
-					luis.sintomas=\{dolor\_abdominal\}, \\
-					luis.observacion=\{rumor\_abdominal, masa\_pulsante\_abdomen\}, \\
-					luis.sistolica=130, \\
-					luis.diastolica=90\\
+					luis.genero=hombre  \ fc \  1.0 \\
+					luis.edad=49  \ fc \   1.0 \\
+					luis.peso=obeso \ fc \  0.5 \\
+					luis.sintomas=\{dolor\_abdominal \ calambres\_pierna\_andar \ fc \  0.7 \ 0.6\} \\
+					luis.observacion=\{rumor\_abdominal \ masa\_pulsante\_abdomen \ fc \  0.6 \ 0.8\} \\
+					luis.sistolica=130 \ fc \  1.0 \\
+					luis.diastolica=90 \ fc \  1.0 \\
+					\\
+					andres.genero=hombre \ fc \  1.0 \\
+					andres.edad=52 \ fc \  1.0 \\
+					andres.peso=obeso \ fc \  0.7 \\
+					andres.sintomas=\{calambres\_pierna\_andar \ fc \  1.0 \} \\
+					andres.observacion=\{fuma \ fc \  1.0\} \\
+					andres.sistolica=125 \ fc \  1.0 \\
+					andres.diastolica=85 \ fc \  1.0 \\
 				\end{split}
 			\end{equation*}
 
