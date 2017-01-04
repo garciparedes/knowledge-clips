@@ -128,7 +128,7 @@
         (assert (oavc-u (objeto ?paciente) (atributo pulso) (valor ?pul) (factor 1.0)))
 )
 
-(defrule R1
+(defrule R1 "aneurisma en arteria abdominal"
 	(oavc-m (objeto ?paciente) (atributo sintomas) (valor dolor_abdominal) (factor ?f1))
 	(oavc-m (objeto ?paciente) (atributo observacion) (valor rumor_abdominal) (factor ?f2))
 	(oavc-m (objeto ?paciente) (atributo observacion) (valor masa_pulsante_abdomen) (factor ?f3))
