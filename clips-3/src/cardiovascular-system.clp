@@ -145,7 +145,39 @@
         (assert (oavc-u  (objeto ?paciente) (atributo diagnostico) (valor aneurisma_arteria_abdominal) (factor ?f)))
 )
 
-
+(defrule R2a "regurgitacion aortica (dos ciertas)"
+ 	(oavc-u (objeto ?paciente) (atributo sistolica) (valor ?x &:(> ?x 140)) (factor ?f1))
+ 	(oavc-u (objeto ?paciente) (atributo pulso) (valor ?y &:(> ?y 50)) (factor ?f2))
+ 	(oavc-m (objeto ?paciente) (atributo observacion) (valor rumor_sistolico) (factor ?f3))
+ 	(oavc-m (objeto ?paciente) (atributo observacion) (valor dilatacion_corazon) (factor ?f4))
+ 	(test (> (min ?f1 ?f2 (max ?f3 ?f4)) 0.2))
+ 	=>
+        (bind ?f (* (min ?f1 ?f2 (max ?f3 ?f4)) 0.7))
+ 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
+)
+ 
+(defrule R2b "regurgitacion aortica (segunda cierta)"
+ 	(oavc-u (objeto ?paciente) (atributo sistolica) (valor ?x &:(> ?x 140)) (factor ?f1))
+ 	(oavc-u (objeto ?paciente) (atributo pulso) (valor ?y &:(> ?y 50)) (factor ?f2))
+ 	(not (oavc-m (objeto ?paciente) (atributo observacion) (valor rumor_sistolico) (factor ?f3)))
+ 	(oavc-m (objeto ?paciente) (atributo observacion) (valor dilatacion_corazon) (factor ?f4))
+ 	(test (> (min ?f1 ?f2 ?f4) 0.2))
+ 	=>
+        (bind ?f (* (min ?f1 ?f2 ?f4) 0.7))
+ 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
+)
+ 
+(defrule R2c "regurgitacion aortica (primera cierta)"
+ 	(oavc-u (objeto ?paciente) (atributo sistolica) (valor ?x &:(> ?x 140)) (factor ?f1))
+ 	(oavc-u (objeto ?paciente) (atributo pulso) (valor ?y &:(> ?y 50)) (factor ?f2))
+ 	(oavc-m (objeto ?paciente) (atributo observacion) (valor rumor_sistolico) (factor ?f3))
+ 	(not (oavc-m (objeto ?paciente) (atributo observacion) (valor dilatacion_corazon) (factor ?f4)))
+ 	(test (> (min ?f1 ?f2 ?f3) 0.2))
+ 	=>
+        (bind ?f (* (min ?f1 ?f2 ?f3) 0.7))
+ 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
+)
+ 
 ;
 ;
 ; Imprimir el diagnostico
