@@ -120,7 +120,7 @@
 ;Reglas para el diagnostico:
 ; ******************************************************************************
 
-(defrule calcular_pulso
+(defrule R1 "calcular pulso"
         (oavc-u (objeto ?paciente) (atributo sistolica) (valor ?sis) (factor ?f1))
         (oavc-u (objeto ?paciente) (atributo diastolica) (valor ?dia) (factor ?f2))
         =>
@@ -128,7 +128,7 @@
         (assert (oavc-u (objeto ?paciente) (atributo pulso) (valor ?pul) (factor 1.0)))
 )
 
-(defrule R1 "aneurisma en arteria abdominal"
+(defrule R2 "aneurisma en arteria abdominal"
 	(oavc-m (objeto ?paciente) (atributo sintomas) (valor dolor_abdominal) (factor ?f1))
 	(oavc-m (objeto ?paciente) (atributo observacion) (valor rumor_abdominal) (factor ?f2))
 	(oavc-m (objeto ?paciente) (atributo observacion) (valor masa_pulsante_abdomen) (factor ?f3))
@@ -138,7 +138,7 @@
         (assert (oavc-m  (objeto ?paciente) (atributo diagnostico) (valor aneurisma_arteria_abdominal) (factor ?f)))
 )
 
-(defrule R2a "regurgitacion aortica (dos ciertas)"
+(defrule R3a "regurgitacion aortica (dos ciertas)"
  	(oavc-u (objeto ?paciente) (atributo sistolica) (valor ?x & :(> ?x 140)) (factor ?f1))
  	(oavc-u (objeto ?paciente) (atributo pulso) (valor ?y & :(> ?y 50)) (factor ?f2))
  	(oavc-m (objeto ?paciente) (atributo observacion) (valor rumor_sistolico) (factor ?f3))
@@ -149,7 +149,7 @@
  	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
 )
  
-(defrule R2b "regurgitacion aortica (segunda cierta)"
+(defrule R3b "regurgitacion aortica (segunda cierta)"
  	(oavc-u (objeto ?paciente) (atributo sistolica) (valor ?x & :(> ?x 140)) (factor ?f1))
  	(oavc-u (objeto ?paciente) (atributo pulso) (valor ?y & :(> ?y 50)) (factor ?f2))
  	(not (oavc-m (objeto ?paciente) (atributo observacion) (valor rumor_sistolico) (factor ?f3)))
@@ -160,7 +160,7 @@
  	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
 )
  
-(defrule R2c "regurgitacion aortica (primera cierta)"
+(defrule R3c "regurgitacion aortica (primera cierta)"
  	(oavc-u (objeto ?paciente) (atributo sistolica) (valor ?x & :(> ?x 140)) (factor ?f1))
  	(oavc-u (objeto ?paciente) (atributo pulso) (valor ?y & :(> ?y 50)) (factor ?f2))
  	(oavc-m (objeto ?paciente) (atributo observacion) (valor rumor_sistolico) (factor ?f3))
@@ -171,7 +171,7 @@
  	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
 )
 
-(defrule R3a "estenosis (calambre pierna)"
+(defrule R4 "estenosis (calambre pierna)"
  	(oavc-m (objeto ?paciente) (atributo sintomas) (valor calambre_pierna_andar) (factor ?f1))
  	(test (> ?f1 0.2))
  	=>
@@ -179,7 +179,7 @@
  	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f)))
 )
 
-(defrule R3b "estenosis (arteriosclerosis)"
+(defrule R5 "estenosis (arteriosclerosis)"
  	(oavc-m (objeto ?paciente) (atributo sintomas) (valor arteriosclerosis) (factor ?f1))
  	(test (> ?f1 0.2))
  	=>
@@ -187,7 +187,7 @@
  	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f)))
 )
 
-(defrule R3c "estenosis (obeso)"
+(defrule R6 "estenosis (obeso)"
  	(oavc-u (objeto ?paciente) (atributo peso) (valor obeso) (factor ?f1))
  	(test (> ?f1 0.2))
  	=>
@@ -196,7 +196,7 @@
  	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f)))
 )
 
-(defrule R3d "estenosis (fumador durante >18 anos)"
+(defrule R7a "estenosis (fumador durante >18 anos)"
  	(oavc-u (objeto ?paciente) (atributo fuma) (valor ?anos) (factor ?f1))
  	(test (> ?anos 18))
  	=>
@@ -205,7 +205,7 @@
  	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f1)))
 )
 
-(defrule R3e "estenosis (fumador entre 12 y 18 anos)"
+(defrule R7b "estenosis (fumador entre 12 y 18 anos)"
  	(oavc-u (objeto ?paciente) (atributo fuma) (valor ?anos) (factor ?f1))
  	(test (<= ?anos 18))
 	(test (> ?anos 12))
@@ -215,7 +215,7 @@
  	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f)))
 )
 
-(defrule R3f "estenosis (edad >55 anos)"
+(defrule R8a "estenosis (edad >55 anos)"
  	(oavc-u (objeto ?paciente) (atributo edad) (valor ?anos) (factor ?f1))
  	(test (> ?anos 55))
  	=>
@@ -224,7 +224,7 @@
  	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f)))
 )
 
-(defrule R3g "estenosis (edad entre 45 y 55 anos)"
+(defrule R8b "estenosis (edad entre 45 y 55 anos)"
  	(oavc-u (objeto ?paciente) (atributo edad) (valor ?anos) (factor ?f1))
  	(test (<= ?anos 55))
  	(test (> ?anos 45))
