@@ -14,8 +14,7 @@
 ; Definicion de plantillas para el formalismo O-A-V-C:
 ; ******************************************************************************
 
-(deftemplate oavc-u
-	"Plantilla para hechos univaluados"
+(deftemplate oavc-u "Plantilla para hechos univaluados"
 	(slot objeto (type SYMBOL))
 	(slot atributo(type SYMBOL))
 	(slot valor)
@@ -23,15 +22,21 @@
 )
 
 
-(deftemplate oavc-m
-	"Plantilla para hechos multivaluados"
+(deftemplate oavc-m "Plantilla para hechos multivaluados"
 	(slot objeto (type SYMBOL))
 	(slot atributo(type SYMBOL))
 	(slot valor)
 	(slot factor (type FLOAT) (range -1.0 +1.0))
 )
 
-
+(defrule garantizar-univaluados
+	(declare (salience 9000))
+	?f1 <- (oavc-u (objeto ?o1) (atributo ?a1))
+	?f2 <- (oavc-u (objeto ?o1) (atributo ?a1))
+	(test (neq ?f1 ?f2))
+=>
+	(retract ?f2)
+)
 
 (defrule duplicar-hechos
 	(declare (salience 10000))
@@ -43,17 +48,8 @@
 
 (defrule acumula-positivos-univaluados
 	(declare (salience 10000))
-	?fact1 <- (oavc-u
-				(objeto ?o)
-				(atributo ?a)
-				(valor ?v)
-				(factor ?f1&:(>= ?f1 0)&:(< ?f1 1))
-	)
-	?fact2 <- (oavc-u (objeto ?o)
-				(atributo ?a)
-				(valor ?v)
-				(factor ?f2&:(>= ?f2 0)&:(< ?f2 1))
-	)
+	?fact1 <- (oavc-u (objeto ?o) (atributo ?a) (valor ?v) (factor ?f1&:(>= ?f1 0)&:(<= ?f1 1)) )
+	?fact2 <- (oavc-u (objeto ?o) (atributo ?a) (valor ?v) (factor ?f2&:(>= ?f2 0)&:(<= ?f2 1)) )
 	(test (neq ?fact1 ?fact2))
 =>
 	(retract ?fact1)
@@ -61,20 +57,10 @@
 	(modify ?fact2 (factor ?f3))
 )
 
-
-
 (defrule acumula-positivos-multivaluados
 	(declare (salience 10000))
-    ?fact1 <- (oavc-m (objeto ?o)
-				(atributo ?a)
-				(valor ?v)
-				(factor ?f1&:(>= ?f1 0)&:(< ?f1 1))
-	)
-	?fact2 <- (oavc-m (objeto ?o)
-				(atributo ?a)
-				(valor ?v)
-				(factor ?f2&:(>= ?f2 0)&:(< ?f2 1))
-	)
+	?fact1 <- (oavc-m (objeto ?o) (atributo ?a) (valor ?v) (factor ?f1&:(>= ?f1 0)&:(<= ?f1 1)) )
+	?fact2 <- (oavc-m (objeto ?o) (atributo ?a) (valor ?v) (factor ?f2&:(>= ?f2 0)&:(<= ?f2 1)) )
 	(test (neq ?fact1 ?fact2))
 =>
 	(retract ?fact1)
@@ -123,10 +109,10 @@
 	(oavc-u (objeto andres) (atributo genero) (valor hombre) (factor 1.0))
 	(oavc-u (objeto andres) (atributo edad) (valor 52) (factor 1.0))
 	(oavc-u (objeto andres) (atributo peso) (valor obeso) (factor 0.7))
-	(oavc-m (objeto andres) (atributo fuma) (valor 18) (factor 1.0))
+	(oavc-u (objeto andres) (atributo fuma) (valor 18) (factor 1.0))
 	(oavc-u (objeto andres) (atributo sistolica) (valor 125) (factor 1.0))
 	(oavc-u (objeto andres) (atributo diastolica) (valor 85) (factor 1.0))
-
+)
 
 
 ;
@@ -137,12 +123,12 @@
 
 (defrule R1
 	(oavc-m (objeto ?paciente) (atributo sintomas) (valor dolor_abdominal) (factor ?f1))
-	(oavc-m (objeto ?paciente) (atributo observacion) (valor fumor_abdominal) (factor ?f2))
-	(oavc-m (objeto ?paciente) (atributo observacion) (valor masa_pilsante_abdomen) (factor ?f3))
+	(oavc-m (objeto ?paciente) (atributo observacion) (valor rumor_abdominal) (factor ?f2))
+	(oavc-m (objeto ?paciente) (atributo observacion) (valor masa_pulsante_abdomen) (factor ?f3))
 	(test (> (min ?f1 ?f2 ?f3) 0.2))
 	=>
         (bind ?f (* (min ?f1 ?f2 ?f3) 0.8))
-        (assert (oavc-u  (objeto ?paciente) (atributo diagnostico) (valor aneurisma_arteria_abdominal) (factor ?f)))
+        (assert (oavc-m  (objeto ?paciente) (atributo diagnostico) (valor aneurisma_arteria_abdominal) (factor ?f)))
 )
 
 (defrule R2 "calcula presion pulso"
@@ -161,7 +147,7 @@
  	(test (> (min ?f1 ?f2 (max ?f3 ?f4)) 0.2))
  	=>
         (bind ?f (* (min ?f1 ?f2 (max ?f3 ?f4)) 0.7))
- 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
+ 	(assert (oavc-u (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
 )
  
 (defrule R3b "regurgitacion aortica (segunda cierta)"
@@ -172,7 +158,7 @@
  	(test (> (min ?f1 ?f2 ?f4) 0.2))
  	=>
         (bind ?f (* (min ?f1 ?f2 ?f4) 0.7))
- 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
+ 	(assert (oavc-u (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
 )
  
 (defrule R3c "regurgitacion aortica (primera cierta)"
@@ -183,11 +169,11 @@
  	(test (> (min ?f1 ?f2 ?f3) 0.2))
  	=>
         (bind ?f (* (min ?f1 ?f2 ?f3) 0.7))
- 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
+ 	(assert (oavc-u (objeto ?paciente) (atributo diagnostico) (valor regurgitacion_aortica) (factor ?f)))
 )
 
 (defrule R4 "esclerosis"
- 	(oavc-u (objeto ?paciente) (atributo sintoma) (valor calambres_piernas) (factor ?f1))
+ 	(oavc-u (objeto ?paciente) (atributo sintoma) (valor calambre_pierna_andar) (factor ?f1))
  	(test (> ?f1 0.2))
  	=>
         (bind ?f (* ?f1 0.9))
@@ -195,33 +181,29 @@
 )
 
 (defrule R5a "estenosis"
- 	(oavc-u (objeto ?paciente) (atributo sintoma) (valor esclerosis_arteria_pierna) (factor ?f1))
+ 	(oavc-m (objeto ?paciente) (atributo sintomas) (valor esclerosis_arteria_pierna) (factor ?f1))
  	(test (> ?f1 0.2))
  	=>
         (bind ?f (* ?f1 0.8))
  	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f)))
 )
 
-(defrule R5b "estenosis"
- 	(oavc-u (objeto ?paciente) (atributo condicion) (valor riesgo) (factor ?f1))
- 	(test (> ?f1 0.2))
- 	=>
- 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f1)))
-)
-
 (defrule R6 "obeso"
  	(oavc-u (objeto ?paciente) (atributo peso) (valor obeso) (factor ?f1))
  	(test (> ?f1 0.2))
  	=>
-        (bind ?f (* ?f1 0.8))
- 	(assert (oavc-m (objeto ?paciente) (atributo condicion) (valor riesgo) (factor ?f)))
+        (bind ?riesgo 1)
+	(bind ?f (* ?riesgo 0.8)) 
+ 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f)))
 )
 
 (defrule R7a "fumador durante >18 anos"
  	(oavc-u (objeto ?paciente) (atributo fuma) (valor ?anos) (factor ?f1))
  	(test (> ?anos 18))
  	=>
- 	(assert (oavc-m (objeto ?paciente) (atributo condicion) (valor riesgo) (factor 1.0)))
+        (bind ?riesgo 1)
+	(bind ?f (* ?riesgo 0.8)) 
+ 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f1)))
 )
 
 (defrule R7b "fumador entre 12 y 18 anos"
@@ -229,21 +211,39 @@
  	(test (<= ?anos 18))
 	(test (> ?anos 12))
  	=>
-	(bind ?f (/ (- ?anos 12) 6)
- 	(assert (oavc-m (objeto ?paciente) (atributo condicion) (valor riesgo) (factor ?f)))
+	(bind ?riesgo (/ (- ?anos 12) 6))
+	(bind ?f (* ?riesgo 0.8)) 
+ 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f)))
 )
+
  
+(defrule R8a "edad >55 anos"
+ 	(oavc-u (objeto ?paciente) (atributo edad) (valor ?anos) (factor ?f1))
+ 	(test (> ?anos 55))
+ 	=>
+        (bind ?riesgo 1)
+	(bind ?f (* ?riesgo 0.6))
+ 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f)))
+)
+
+(defrule R8b "edad entre 45 y 55 anos"
+ 	(oavc-u (objeto ?paciente) (atributo edad) (valor ?anos) (factor ?f1))
+ 	(test (<= ?anos 55))
+ 	(test (> ?anos 45))
+ 	=>
+	(bind ?riesgo (/ (- ?anos 45) 10))
+	(bind ?f (* ?riesgo 0.6)) 
+ 	(assert (oavc-m (objeto ?paciente) (atributo diagnostico) (valor estenosis) (factor ?f)))
+)
+
 ;
 ;
 ; Imprimir el diagnostico
 ; ******************************************************************************
 
 (defrule imprimir_diagnostico
-	(declare
-		(salience -10000))
-	(oavc-m
-		(objeto ?pac) (atributo diagnostico) (valor ?diag) (factor ?f))
+	(declare (salience -10000))
+	(oavc-m (objeto ?paciente) (atributo diagnostico) (valor ?diag) (factor ?f))
 	=>
-	(printout t
-		?pac " padece " ?diag " con un factor de certeza de " ?f crlf)
+	(printout t ?paciente " padece " ?diag " con un factor de certeza de " ?f crlf)
 )
