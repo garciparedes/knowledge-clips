@@ -17,6 +17,8 @@
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 
+\usepackage{pgfplots}
+
 
 \usepackage{titlesec}
 \renewcommand\thesection{\Roman{section}}
@@ -85,10 +87,16 @@
 
 			\begin{multline*}
 				DA = \{ \\
-					paciente.genero^s:{hombre, mujer}, paciente.edad^s:number, \\
-					paciente.sintomas^m, paciente.observacion^m, \\
-					paciente.sistolica^s:number, paciente.diastolica^s:number, paciente.pulso^s:number, \\
-					paciente.peso^s, paciente.fuma^s:number, paciente.diagnostico^m \\
+					paciente.genero^s:\{hombre, mujer\}, \\
+					paciente.edad^s:number, \\
+					paciente.peso^s, \\
+					paciente.sintomas^m, \\
+					paciente.observacion^m, \\
+					paciente.sistolica^s:number, \\
+					paciente.diastolica^s:number, \\
+					paciente.pulso^s:number, \\
+					paciente.fuma^s:number, \\
+ 					paciente.diagnostico^m \\
 				\}
 			\end{multline*}
 
@@ -131,12 +139,53 @@
 					\textbf{then} $add(?x, diagnostico, estenosis)$ \textbf{fc} $0.8$ \textbf{fi}
 					\\ \\
 					Si el paciente fuma desde hace mas de 15 años es un paciente de riesgo y por lo tanto podria tener estenosis con un alto grado de probabilidad.
+					\[
+						riesgo\_fumar = \frac{tiempo\_fumando-12}{6}
+					\]
+					\newline
+					\begin{center}
+						\begin{tikzpicture}
+							\begin{axis}[
+								axis x line=center,
+							  axis y line=center,
+								xmin=5,
+							  xmax=26,
+							  ymin=-0.5,
+							  ymax=1.5
+							]
+								\addplot[domain=5:12]{0};
+								\addplot[domain=12:18]{(x - 12)/6};
+								\addplot[domain=18:26]{1};
+							\end{axis}
+						\end{tikzpicture}
+					\end{center}
+
 
 				\item
 					\textbf{if} $greaterThan(?x, edad, 50)$ \\
 					\textbf{then} $add(?x, diagnostico, estenosis)$ \textbf{fc} $0.6$ \textbf{fi}
 					\\ \\
 					Si el paciente tiene una edad mayor que 50 años es un paciente de riesgo y por lo tanto podria tener estenosis con un alto grado de probabilidad.
+					\[
+						riesgo\_edad = \frac{edad - 45}{10}
+					\]
+					\newline
+					\begin{center}
+						\begin{tikzpicture}
+							\begin{axis}[
+								axis x line=center,
+								axis y line=center,
+								xmin=30,
+								xmax=70,
+								ymin=-0.5,
+								ymax=1.5
+							]
+								\addplot[domain=30:45]{0};
+								\addplot[domain=45:55]{(x - 45)/10};
+								\addplot[domain=55:70]{1};
+							\end{axis}
+						\end{tikzpicture}
+					\end{center}
 
 				\item
 					\textbf{if} $equals(?x, sintomas, calambres\_pierna\_andar)$ \\
