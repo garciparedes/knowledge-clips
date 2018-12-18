@@ -50,8 +50,8 @@
 ;Garantizamos la semantica univaluada:
 (defrule garantizar_semantica
 	(declare (salience 10000))
-	?f1 <- (oav-u (objeto ?obj) (atributo ?atr) (valor ?val))
-	?f2 <- (oav-u (objeto ?obj) (atributo ?atr) (valor ?val))
+	?f1 <- (oav-u (objeto ?obj) (atributo ?atr) (valor ?))
+	?f2 <- (oav-u (objeto ?obj) (atributo ?atr) (valor ?))
 	(test (neq ?f1 ?f2))
 	=>
 	(retract ?f2)
